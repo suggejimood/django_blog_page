@@ -1,4 +1,5 @@
 from datetime import date
+from django.http import Http404
 from django.shortcuts import render
 
 # Create your views here.
@@ -81,5 +82,9 @@ def posts(request):
     return render(request, "blog/posts.html", {"posts": allPosts})
 
 def post(request, slug):
-    post = next(post for post in allPosts if post['slug'] == slug)
-    return render(request, "blog/post.html", {"post": post})
+    post = next((post for post in allPosts if post['slug'] == slug), None)
+
+    if post:
+        return render(request, "blog/post.html", {"post": post})
+    else:
+        raise Http404()
